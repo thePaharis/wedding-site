@@ -1,69 +1,38 @@
-import Image from "next/image";
+import { weddingEvents } from "@/lib/events";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <>
+      <a className="skip-link" href="#main">Skip to content</a>
+      <header className="site-header">
+        <a className="monogram" href="#" aria-label="Nischal and Bhumika home">N <span>&</span> B</a>
+        <nav aria-label="Main navigation"><a href="#celebration">Celebration</a><a href="#invitation">Your invitation</a></nav>
+      </header>
+      <main id="main">
+        <section className="hero" aria-labelledby="title">
+          <p className="eyebrow">Together with our families</p>
+          <h1 id="title">Nischal <span>&</span><br />Bhumika</h1>
+          <p className="hero-message">A new chapter. A celebration with the people we love.</p>
+          <p className="date-line">February 1–6, 2027</p>
+          <a className="button" href="#celebration">Explore the celebration</a>
+          <p className="hero-note">Six events. One unforgettable week.</p>
+        </section>
+        <section className="celebration section" id="celebration" aria-labelledby="schedule-title">
+          <div className="section-heading"><p className="eyebrow">Our wedding week</p><h2 id="schedule-title">Moments to share.</h2><p>We look forward to celebrating with you. Your personal invitation will show the events you are invited to.</p></div>
+          <div className="event-grid">
+            {weddingEvents.map((event, index) => (
+              <article className="event" key={event.id}>
+                <div className="event-top"><time dateTime={event.date}>FEB <strong>{Number(event.date.slice(-2)).toString().padStart(2, "0")}</strong></time><span className="event-number">0{index + 1}</span></div>
+                <h3>{event.name}</h3><p>{event.timeLabel}</p><p className="venue">Venue to be announced</p>
+              </article>
+            ))}
+          </div>
+        </section>
+        <section className="invitation section" id="invitation" aria-labelledby="invitation-title">
+          <p className="eyebrow">A place for you</p><h2 id="invitation-title">Your personal invitation.</h2><p>When invitations are ready, we’ll share your family’s private link by email or text. It will include your invited events and a way to RSVP for each guest.</p><p className="invitation-note">Please use the link sent to you to view your invitation.</p>
+        </section>
       </main>
-    </div>
+      <footer><a className="monogram" href="#">N <span>&</span> B</a><p>With love, Nischal & Bhumika</p><span>February 2027</span></footer>
+    </>
   );
 }
