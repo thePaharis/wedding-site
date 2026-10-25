@@ -35,12 +35,13 @@ export async function createHousehold(form:FormData) {
 }
 export async function createGuest(form:FormData){
  await requireAdmin();let client;
- try{const household=uuid(field(form,"household"));const first=field(form,"first",100);const last=field(form,"last",100);if(!first)throw Error("Missing name");const events=form.getAll("events").map(v=>uuid(String(v)));client=await db().connect();await client.query("BEGIN");const guest=await client.query("INSERT INTO guests(household_id,first_name,last_name) VALUES ($1,$2,$3) RETURNING id",[household,first,last]);for(const event of new Set(events))await client.query("INSERT INTO guest_event_invitations(guest_id,event_id) VALUES ($1,$2)",[guest.rows[0].id,event]);await client.query("COMMIT");}catch{if(client)await client.query("ROLLBACK");redirect("/admin/guests?error=save");}finally{client?.release();}
+ try{const household=uuid(field(form,"household"));const first=field(form,"first",100);const last=field(form,"last",100);if(!first)throw Error("Missing name");const events=form.getAll("events").map(v=>uuid(String(v)));client=await db().connect();await client.query("BEGIN");await client.query("SELECT id FROM households WHERE id=$1 FOR UPDATE",[household]);const guest=await client.query("INSERT INTO guests(household_id,first_name,last_name) VALUES ($1,$2,$3) RETURNING id",[household,first,last]);for(const event of new Set(events))await client.query("INSERT INTO guest_event_invitations(guest_id,event_id) VALUES ($1,$2)",[guest.rows[0].id,event]);await client.query("COMMIT");}catch{if(client)await client.query("ROLLBACK");redirect("/admin/guests?error=save");}finally{client?.release();}
  revalidatePath("/admin/guests");redirect("/admin/guests?saved=1");
 }
 export async function updateInvitations(form:FormData){
  await requireAdmin();let client;
  try{const guest=uuid(field(form,"guest"));const events=form.getAll("events").map(v=>uuid(String(v)));client=await db().connect();await client.query("BEGIN");
+ const owner=await client.query("SELECT h.id FROM households h JOIN guests g ON g.household_id=h.id WHERE g.id=$1 FOR UPDATE OF h",[guest]);if(!owner.rowCount)throw Error("Guest not found");
  // Revoking an invitation deletes its dependent RSVP in the same transaction.
  await client.query("DELETE FROM rsvps WHERE guest_id=$1 AND NOT(event_id=ANY($2::uuid[]))",[guest,events]);
  await client.query("DELETE FROM guest_event_invitations WHERE guest_id=$1 AND NOT(event_id=ANY($2::uuid[]))",[guest,events]);

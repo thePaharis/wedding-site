@@ -44,3 +44,9 @@
 .login-page>.admin-card {max-width:460px;margin:auto;}
 .login-page h1 {font-size:38px;}
 @media(max-width:760px){.stats,.admin-event-grid{grid-template-columns:1fr;}.admin-header{gap:16px;}.admin-header nav{flex-basis:100%;gap:20px;}.admin h1{font-size:34px;}.admin-card{padding:22px;}.admin-content{padding:32px 18px;}}
+.household-invitation {background:#f4eee7;padding:20px;margin:20px 0;}
+.household-invitation h3 {font:22px Georgia,serif;margin:0 0 12px;}
+.household-invitation p {font-size:14px;}
+.generated-link {border-top:1px solid #cbb9a3;padding-top:16px;margin-top:20px;}
+.generated-link .admin-links {align-items:center;}
+.admin button:disabled {opacity:.65;cursor:wait;}
