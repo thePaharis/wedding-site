@@ -1,0 +1,14 @@
+.invitation-page {background:#f0e9e1;min-height:100vh;padding:0 24px 40px;color:#39252b;}
+.invitation-masthead {max-width:850px;margin:auto;padding:26px 0;display:flex;justify-content:space-between;align-items:center;gap:20px;}
+.invitation-masthead a {font:28px Georgia,serif;}.invitation-masthead a span {font-style:italic;color:#936a35;}
+.invitation-masthead>span {font-size:12px;letter-spacing:.15em;}
+.invitation-paper {max-width:850px;margin:auto;padding:56px;background:#fffdf9;border:1px solid #d6c4ae;}
+.invitation-welcome {text-align:center;margin-bottom:40px;}.invitation-page h1 {font-size:clamp(36px,5vw,55px);line-height:1.2;margin:20px 0;letter-spacing:-.03em;}.invitation-page h1 span {color:#936a35;font-style:italic;}
+.household-greeting {font:italic 24px/1.5 Georgia,serif;}.invitation-time-note {font-size:14px;color:#735f64;}
+.rsvp-event {border-top:1px solid #d6c4ae;padding:32px 0;}.rsvp-event h2 {margin:12px 0;font-size:34px;}.rsvp-event-heading time {font-size:14px;letter-spacing:.03em;color:#805b2d;}.rsvp-event p {margin:8px 0;color:#735f64;}
+.guest-response {border:1px solid #d6c4ae;padding:20px;margin:24px 0 0;}.guest-response legend {font:22px Georgia,serif;padding:0 8px;}.response-options {display:flex;flex-wrap:wrap;gap:16px;}.response-options label {display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f4eee7;cursor:pointer;min-height:44px;}.response-options input {width:18px;height:18px;accent-color:#501c2e;}
+.diet-label {display:block;font-size:14px;margin-top:20px;}.diet-label span {color:#735f64;}.diet-label textarea {display:block;width:100%;font:16px/1.5 Arial,sans-serif;background:white;border:1px solid #bda88d;padding:12px;margin-top:8px;border-radius:3px;}
+.rsvp-submit {border-top:1px solid #d6c4ae;padding-top:28px;}.rsvp-submit button {border:1px solid #501c2e;background:#501c2e;color:white;padding:15px 28px;font-size:16px;cursor:pointer;}.rsvp-submit button:disabled {opacity:.65;cursor:wait;}.rsvp-submit p {font-size:14px;color:#735f64;max-width:500px;}
+.invitation-page input:focus-visible,.invitation-page textarea:focus-visible,.invitation-page button:focus-visible {outline:3px solid #b18b48;outline-offset:3px;}
+.rsvp-notice {padding:18px;background:#f1ead8;border:1px solid #c6a26c;margin-bottom:24px;}.rsvp-notice.error {background:#fff0ed;border-color:#9b4c48;}.invitation-privacy {font-size:13px;color:#735f64;border-top:1px solid #d6c4ae;margin-top:36px;padding-top:24px;}.invitation-signoff {display:block;text-align:center;border:0;padding:30px 0;font:italic 23px Georgia,serif;}
+@media(max-width:600px){.invitation-page{padding:0 12px 20px;}.invitation-paper{padding:32px 20px;}.invitation-masthead{padding:20px 8px;}.invitation-masthead>span{font-size:10px;}.guest-response{padding:16px 12px;}.response-options{gap:10px;}.response-options label{font-size:14px;}}
