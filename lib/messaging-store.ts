@@ -12,7 +12,7 @@ export function validateDraft(input:MessageDraft) {
 export async function selectContacts(pool:Pool,input:MessageDraft):Promise<Contact[]> {
  validateDraft(input);
  const result=await pool.query(`SELECT h.id,h.name,lower(trim(h.primary_email)) email,h.invitation_token_encrypted
- FROM households h WHERE EXISTS (
+ FROM households h WHERE h.preferred_contact_method IN ('unspecified','email') AND EXISTS (
  SELECT 1 FROM guests g JOIN guest_event_invitations i ON i.guest_id=g.id
  JOIN events e ON e.id=i.event_id AND e.archived_at IS NULL
  LEFT JOIN rsvps r ON r.guest_id=i.guest_id AND r.event_id=i.event_id

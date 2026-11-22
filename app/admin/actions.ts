@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSession, endSession, requireAdmin, verifyLogin } from "@/lib/auth";
 import { db } from "@/lib/db";
+import {validateContact} from "@/lib/manual-sharing";
 function field(form:FormData,name:string,max=500) {const value=form.get(name);if(typeof value!=="string"||value.trim().length>max)throw Error("Invalid field");return value.trim();}
 function uuid(value:string){if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value))throw Error("Invalid identifier");return value;}
 export async function login(form:FormData) {
@@ -30,7 +31,7 @@ export async function saveEvent(form:FormData) {
 }
 export async function createHousehold(form:FormData) {
  await requireAdmin();
- try{const name=field(form,"name",150);const email=field(form,"email",254);const phone=field(form,"phone",30);if(!name||(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)))throw Error("Invalid household");await db().query("INSERT INTO households(name,primary_email,primary_phone) VALUES ($1,$2,$3)",[name,email||null,phone||null]);}catch{redirect("/admin/guests?error=save");}
+ try{const contact=validateContact({name:field(form,"name",150),email:field(form,"email",254),phone:field(form,"phone",50),method:field(form,"method",20)||"unspecified"});await db().query("INSERT INTO households(name,primary_email,primary_phone,preferred_contact_method) VALUES ($1,$2,$3,$4)",[contact.name,contact.email,contact.phone,contact.method]);}catch{redirect("/admin/guests?error=save");}
  revalidatePath("/admin/guests");redirect("/admin/guests?saved=1");
 }
 export async function createGuest(form:FormData){

@@ -10,7 +10,7 @@ process.env.SITE_URL='https://example.com';
 process.env.EMAIL_SENDING_ENABLED='true';
 async function setup(){
  const database=new PGlite();
- for(const file of ['001_initial.sql','002_admin.sql','003_email_messages.sql'])await database.exec(await readFile(new URL('../database/'+file,import.meta.url),'utf8'));
+ for(const file of ['001_initial.sql','002_admin.sql','003_email_messages.sql','004_manual_invitation_sharing.sql'])await database.exec(await readFile(new URL('../database/'+file,import.meta.url),'utf8'));
  const query=async(sql,params)=>{const result=await database.query(sql,params);return {...result,rowCount:Math.max(result.rows.length,result.affectedRows||0)}};
  const pool={query,connect:async()=>({query,release(){}})};
  const add=async(name,email,attending)=>{

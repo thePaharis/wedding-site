@@ -1,0 +1,7 @@
+"use client";
+import {useActionState} from "react";
+import {updateContact} from "./sharing-actions";
+export default function HouseholdContact({household}:{household:{id:string;name:string;email:string|null;phone:string|null;method:string}}) {
+ const [state,action,pending]=useActionState(updateContact,{});
+ return <details className="guest-details"><summary>Contact details & preferred method</summary><form action={action}><input type="hidden" name="household" value={household.id}/><label>Household name<input name="name" defaultValue={household.name} required maxLength={150}/></label><label>Preferred contact method<select name="method" defaultValue={household.method}><option value="unspecified">Choose later</option><option value="email">Email</option><option value="sms">SMS</option><option value="messenger">Messenger</option></select></label><label>Email<input type="email" name="email" defaultValue={household.email||''} maxLength={254}/></label><label>Phone, with country code<input type="tel" name="phone" defaultValue={household.phone||''} maxLength={50} placeholder="+1… or +977…"/></label><p className="form-help">Messenger does not require an email or phone number. Choosing SMS records a preference; it does not subscribe anyone to automated texts.</p>{state.error&&<p role="alert" className="notice">{state.error}</p>}{state.saved&&<p role="status">Contact details saved.</p>}<button disabled={pending}>{pending?'Saving…':'Save contact details'}</button></form></details>;
+}

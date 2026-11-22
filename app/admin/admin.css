@@ -51,3 +51,5 @@
 .generated-link .admin-links {align-items:center;}
 .admin button:disabled {opacity:.65;cursor:wait;}
 .email-preview {display:block;width:100%;min-height:520px;border:1px solid #d6c4ae;background:#f0e9e1;}
+.share-message {min-height:300px;resize:vertical;line-height:1.7!important;}
+.share-record {border-top:1px solid #cbb9a3;margin-top:24px;padding-top:16px;}

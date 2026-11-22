@@ -14,7 +14,7 @@ npm run dev
 
 The migration adds email campaign tables and an encrypted invitation-link column. It preserves existing invitations and RSVPs.
 
-Open http://localhost:3000/admin/messages. Create a preview, inspect its recipients and remove any households you do not want included. Missing/invalid addresses and addresses shared by multiple selected households are excluded and listed for review. Only household primary email addresses are used.
+Open http://localhost:3000/admin/messages. Create a preview, inspect its recipients and remove any households you do not want included. Missing/invalid addresses and addresses shared by multiple selected households are excluded and listed for review. Only household primary email addresses are used. Households that prefer Messenger or SMS are excluded from email audiences; unspecified or Email preferences remain eligible.
 
 Audiences include all households with invited guests, households invited to a selected event, households with someone attending it, and households with at least one unanswered open RSVP for it. A household receives one email, even if multiple family members match. Updates link to the public website; invitations link to the household's private RSVP page.
 
