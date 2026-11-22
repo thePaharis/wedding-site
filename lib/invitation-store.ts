@@ -6,14 +6,14 @@ export const tokenHash = (token: string) => createHash("sha256").update(token).d
 export const validToken = (token: string) => /^[a-f0-9]{64}$/.test(token);
 export const responseKey = (guest: string, event: string) => `${guest}:${event}`;
 export type InvitationRow = {
-  guest_id: string; first_name: string; last_name: string;
-  event_id: string; event_name: string; event_date: string; start_time: string | null;
+  guest_id: string; first_name: string; last_name: string; first_name_ne:string|null; last_name_ne:string|null;
+  event_id: string; event_name: string; name_ne:string|null;venue_ne:string|null;address_ne:string|null;description_ne:string|null;dress_code_ne:string|null;instructions_ne:string|null;time_note_ne:string|null; event_date: string; start_time: string | null;
   end_time: string | null; time_note: string | null; time_zone: string;
   venue: string | null; address: string | null; description: string | null;
   dress_code: string | null; instructions: string | null; closed: boolean;
   attending: boolean | null; dietary_requirements: string | null;
 };
-export type HouseholdInvitation = { name: string; rows: InvitationRow[] };
+export type HouseholdInvitation = { name: string; nameNe:string|null; language:'en'|'ne'; rows: InvitationRow[] };
 
 export class InvitationLinkError extends Error {}
 export async function issueInvitation(pool: Pool, household: string, confirmReplacement = false) {
@@ -35,10 +35,10 @@ export async function readInvitation(pool: Pool, token: string): Promise<Househo
   if (!validToken(token)) return null;
   // Only return guests/events authorized by this token. No full guest-list query.
   const result = await pool.query(`
-    SELECT h.name, g.id guest_id, g.first_name, g.last_name,
+    SELECT h.name,h.name_ne household_name_ne,h.preferred_language, g.id guest_id, g.first_name, g.last_name,g.first_name_ne,g.last_name_ne,
       e.id event_id, e.name event_name, to_char(e.event_date,'YYYY-MM-DD') event_date,
       to_char(e.start_time,'HH24:MI') start_time, to_char(e.end_time,'HH24:MI') end_time,
-      e.time_note, e.time_zone, e.venue, e.address, e.description, e.dress_code, e.instructions,
+      e.name_ne,e.venue_ne,e.address_ne,e.description_ne,e.dress_code_ne,e.instructions_ne,e.time_note_ne,e.time_note, e.time_zone, e.venue, e.address, e.description, e.dress_code, e.instructions,
       (e.rsvp_deadline IS NOT NULL AND e.rsvp_deadline<=now()) closed,
       r.attending, r.dietary_requirements
     FROM households h
@@ -50,7 +50,7 @@ export async function readInvitation(pool: Pool, token: string): Promise<Househo
     ORDER BY e.event_date, CASE e.slug WHEN 'kasar' THEN 0 WHEN 'mehendi' THEN 1 ELSE 2 END,
       e.name, g.first_name, g.last_name, g.id`, [tokenHash(token)]);
   if (!result.rowCount) return null;
-  return { name: result.rows[0].name, rows: result.rows.filter(r => r.event_id !== null) };
+  return { name: result.rows[0].name,nameNe:result.rows[0].household_name_ne,language:result.rows[0].preferred_language, rows: result.rows.filter(r => r.event_id !== null) };
 }
 
 export class RsvpError extends Error {}

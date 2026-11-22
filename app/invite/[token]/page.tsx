@@ -1,13 +1,19 @@
-import type { Metadata } from "next";
-import { db } from "@/lib/db";
-import { readInvitation, validToken } from "@/lib/invitation-store";
+import {cache} from "react";
+import type {Metadata} from "next";
+import {cookies} from "next/headers";
+import {db} from "@/lib/db";
+import {readInvitation,validToken} from "@/lib/invitation-store";
+import {resolveLocale,text} from "@/lib/i18n";
+import LanguageToggle from "@/components/language-toggle";
 import RsvpForm from "./rsvp-form";
 import "./invitation.css";
-export const dynamic = "force-dynamic";
-export const metadata: Metadata = {title:"Your invitation | Nischal & Bhumika",robots:{index:false,follow:false,noarchive:true},referrer:"no-referrer"};
-export default async function InvitationPage({ params }: { params: Promise<{token:string}> }) {
-  const {token}=await params;
-  const invitation=validToken(token) ? await readInvitation(db(),token) : null;
-  if (!invitation) return <main className="invitation-page"><div className="invitation-paper"><p className="eyebrow">Nischal & Bhumika</p><h1>Let’s find your invitation.</h1><p>This link is invalid or has been replaced. Please use the latest link we sent you, or contact Nischal or Bhumika.</p><a href="/">Return to the wedding website</a></div></main>;
-  return <main className="invitation-page"><header className="invitation-masthead"><a href="/">N <span>&</span> B</a><span>POKHARA · NEPAL</span></header><div className="invitation-paper"><div className="invitation-welcome"><p className="eyebrow">Together with our families</p><h1>Nischal <span>&</span> Bhumika</h1><p className="household-greeting">With love, to {invitation.name}</p><p>We would love to celebrate with you. Here are your family’s invited events.</p><p className="invitation-time-note">All times are local to Nepal (Asia/Kathmandu).</p></div>{invitation.rows.length ? <RsvpForm token={token} rows={invitation.rows}/> : <div className="rsvp-notice">Your event details are being prepared. Please contact us or check this link again later.</div>}<p className="invitation-privacy">This link is private to your household. Anyone with it can view and update your family’s responses, so please keep it within your household.</p></div><footer className="invitation-signoff">With love, Nischal & Bhumika</footer></main>;
+export const dynamic='force-dynamic';
+const findInvitation=cache(async(token:string)=>validToken(token)?await readInvitation(db(),token):null);
+export async function generateMetadata({params,searchParams}:{params:Promise<{token:string}>;searchParams:Promise<{lang?:string}>}):Promise<Metadata> {const {token}=await params;const invitation=await findInvitation(token);const language=resolveLocale((await searchParams).lang,invitation?.language,(await cookies()).get('wedding_language')?.value);return {title:`${text(language).yourInvitation} | ${text(language).couple}`,robots:{index:false,follow:false,noarchive:true},referrer:'no-referrer'};}
+export default async function InvitationPage({params,searchParams}:{params:Promise<{token:string}>;searchParams:Promise<{lang?:string}>}) {
+ const {token}=await params;const invitation=await findInvitation(token);
+ const language=resolveLocale((await searchParams).lang,invitation?.language,(await cookies()).get('wedding_language')?.value);
+ const t=text(language);const path=validToken(token)?`/invite/${token}`:'/';
+ if(!invitation)return <main className="invitation-page" lang={language}><div className="invitation-paper"><LanguageToggle language={language} path={path}/><p className="eyebrow">{t.couple}</p><h1>{t.invalidTitle}</h1><p>{t.invalidBody}</p><a href={`/?lang=${language}`}>{t.home}</a></div></main>;
+ return <main className="invitation-page" lang={language}><header className="invitation-masthead"><a href={`/?lang=${language}`}>{t.couple}</a><LanguageToggle language={language} path={path}/></header><div className="invitation-paper"><div className="invitation-welcome"><p className="eyebrow">{t.families}</p><h1>{t.nischal} <span>{t.and}</span> {t.bhumika}</h1><p className="household-greeting">{t.greeting} {language==='ne'?invitation.nameNe||invitation.name:invitation.name}</p><p>{t.invitedBody}</p><p className="invitation-time-note">{t.timeNote}</p></div>{invitation.rows.length?<RsvpForm token={token} rows={invitation.rows} language={language}/>:<div className="rsvp-notice">{t.preparing}</div>}<p className="invitation-privacy">{t.privacy}</p></div><footer className="invitation-signoff">{t.signoff}</footer></main>;
 }

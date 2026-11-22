@@ -6,7 +6,7 @@ import {issueInvitation,readInvitation,saveResponses,tokenHash,responseKey} from
 
 async function setup() {
  const database=new PGlite();
- for (const file of ['001_initial.sql','002_admin.sql','003_email_messages.sql','004_manual_invitation_sharing.sql']) await database.exec(await readFile(new URL('../database/'+file,import.meta.url),'utf8'));
+ for (const file of ['001_initial.sql','002_admin.sql','003_email_messages.sql','004_manual_invitation_sharing.sql','005_nepali_language.sql']) await database.exec(await readFile(new URL('../database/'+file,import.meta.url),'utf8'));
  const query=async(sql,params)=>{const result=await database.query(sql,params);return {...result,rowCount:Math.max(result.affectedRows??0,result.rows.length)};};
  const pool={query,connect:async()=>({query,release(){}})};
  const insert=async(sql,params)=>(await query(sql,params)).rows[0].id;

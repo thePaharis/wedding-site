@@ -7,7 +7,7 @@ import {approveCampaign,createCampaign,MessageError,type MessageDraft} from "@/l
 export async function draftMessage(form:FormData) {
  const actor=await requireAdmin();let id;
  try {
-  const input={subject:String(form.get('subject')||''),body:String(form.get('body')||''),kind:String(form.get('kind')||''),audience:String(form.get('audience')||''),eventId:String(form.get('event')||'')||null} as MessageDraft;
+  const input={subject:String(form.get('subject')||''),body:String(form.get('body')||''),subjectNe:String(form.get('subject_ne')||''),bodyNe:String(form.get('body_ne')||''),kind:String(form.get('kind')||''),audience:String(form.get('audience')||''),eventId:String(form.get('event')||'')||null} as MessageDraft;
   id=await createCampaign(db(),input,actor.email);
  }catch(error){redirect('/admin/messages?error='+encodeURIComponent(error instanceof MessageError?error.message:'Could not create the preview. Please try again.'));}
  redirect(`/admin/messages/${id}`);

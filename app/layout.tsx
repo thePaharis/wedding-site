@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import {cookies} from "next/headers";
+import {resolveLocale} from "@/lib/i18n";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://nischalandbhumika.com"),
@@ -7,6 +9,7 @@ export const metadata: Metadata = {
   description: "Celebrate Nischal and Bhumika’s wedding, February 1–6, 2027. Wedding week details and personalized invitations.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="en"><body>{children}</body></html>;
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const language=resolveLocale((await cookies()).get("wedding_language")?.value);
+  return <html lang={language}><body>{children}</body></html>;
 }
