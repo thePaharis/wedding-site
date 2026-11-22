@@ -1,0 +1,10 @@
+{$SITE_DOMAIN} {
+    encode zstd gzip
+    header Referrer-Policy "no-referrer"
+    header X-Content-Type-Options "nosniff"
+    header X-Frame-Options "SAMEORIGIN"
+    reverse_proxy web:3000
+}
+www.{$SITE_DOMAIN} {
+    redir https://{$SITE_DOMAIN}{uri} permanent
+}

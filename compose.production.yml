@@ -1,0 +1,73 @@
+name: wedding
+services:
+  db:
+    image: postgres:${POSTGRES_MAJOR_VERSION:?Set POSTGRES_MAJOR_VERSION in .env.compose.local}-bookworm
+    restart: unless-stopped
+    env_file: .env.postgres.local
+    volumes:
+      - postgres_data:${POSTGRES_DATA_DIR:?Set POSTGRES_DATA_DIR in .env.compose.local}
+      - ./deploy/init-app-role.sh:/docker-entrypoint-initdb.d/01-app-role.sh:ro
+    networks: [backend]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  web:
+    image: wedding-web:local
+    build:
+      context: .
+      target: web
+    restart: unless-stopped
+    env_file: .env.production.local
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [frontend, backend]
+  proxy:
+    image: caddy:2
+    restart: unless-stopped
+    env_file: .env.production.local
+    ports: ["80:80", "443:443", "443:443/udp"]
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      web:
+        condition: service_healthy
+    networks: [frontend]
+  tools:
+    profiles: [tools]
+    image: wedding-tools:local
+    build:
+      context: .
+      target: tools
+    env_file: .env.migrations.local
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [backend]
+  email:
+    profiles: [email]
+    image: wedding-tools:local
+    build:
+      context: .
+      target: tools
+    env_file:
+      - path: .env.production.local
+      - path: .env.email.local
+        required: false
+    command: [node, --experimental-strip-types, scripts/send-emails.mjs]
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [frontend, backend]
+networks:
+  frontend:
+  backend:
+    internal: true
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:

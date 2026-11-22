@@ -1,10 +1,11 @@
+import {postgresOptions} from '../lib/postgres-options.mjs';
 import nextEnv from '@next/env';
 const { loadEnvConfig } = nextEnv;
 import pg from 'pg';
 import { readFile, readdir } from 'node:fs/promises';
-loadEnvConfig(process.cwd());
+loadEnvConfig(process.cwd(),process.env.NODE_ENV==='production'?false:true);
 if (!process.env.DATABASE_URL) throw Error('Set DATABASE_URL in .env.local first.');
-const client = new pg.Client({connectionString: process.env.DATABASE_URL, connectionTimeoutMillis: 5000});
+const client = new pg.Client(postgresOptions());
 try {
  await client.connect();
  await client.query('SELECT pg_advisory_lock(2702027)');

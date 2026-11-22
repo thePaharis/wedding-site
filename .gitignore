@@ -42,3 +42,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Deployment database backups
+/backups/
+*.dump
+*.backup
+*.partial

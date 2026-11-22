@@ -1,11 +1,12 @@
+import {postgresOptions} from '../lib/postgres-options.mjs';
 import nextEnv from '@next/env';
 import pg from 'pg';
 import {SESv2Client,SendEmailCommand} from '@aws-sdk/client-sesv2';
 import {dispatchOne} from '../lib/messaging-store.ts';
-nextEnv.loadEnvConfig(process.cwd());
+nextEnv.loadEnvConfig(process.cwd(),process.env.NODE_ENV==='production'?false:true);
 if(process.env.EMAIL_SENDING_ENABLED!=='true')throw Error('Email sending is disabled. Review EMAIL_SETUP.md first.');
 if(!process.env.AWS_REGION||!process.env.SES_FROM_EMAIL||!/^\S+@[^\s@]+\.[^\s@]+$/.test(process.env.SES_FROM_EMAIL))throw Error('Set AWS_REGION and a verified SES_FROM_EMAIL.');
-const pool=new pg.Pool({connectionString:process.env.DATABASE_URL,max:2,connectionTimeoutMillis:5000});
+const pool=new pg.Pool({...postgresOptions(),max:2});
 const ses=new SESv2Client({region:process.env.AWS_REGION,maxAttempts:1,requestHandler:{requestTimeout:15000}});
 try {
  await ses.config.credentials();

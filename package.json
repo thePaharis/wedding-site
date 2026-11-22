@@ -14,7 +14,11 @@
     "emails:send": "node --experimental-strip-types scripts/send-emails.mjs",
     "test:messages": "node --experimental-strip-types --test tests/messages.test.mjs",
     "test:sharing": "node --experimental-strip-types --test tests/manual-sharing.test.mjs",
-    "test:language": "node --experimental-strip-types --test tests/language.test.mjs"
+    "test:language": "node --experimental-strip-types --test tests/language.test.mjs",
+    "deploy:check": "node scripts/deploy-check.mjs",
+    "deploy:configure": "node scripts/configure-lightsail.mjs",
+    "test:deployment": "node --test tests/deployment.test.mjs",
+    "deploy:backup": "node scripts/backup-lightsail.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-sesv2": "^3.1156.0",
