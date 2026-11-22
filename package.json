@@ -9,9 +9,13 @@
     "lint": "eslint",
     "db:migrate": "node scripts/migrate.mjs",
     "admin:create": "node scripts/create-admin.mjs",
-    "test:invitations": "node --experimental-strip-types --test tests/invitations.test.mjs"
+    "test:invitations": "node --experimental-strip-types --test tests/invitations.test.mjs",
+    "email:key": "node scripts/email-key.mjs",
+    "emails:send": "node --experimental-strip-types scripts/send-emails.mjs",
+    "test:messages": "node --experimental-strip-types --test tests/messages.test.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-sesv2": "^3.1156.0",
     "next": "16.3.6",
     "pg": "^8.23.1",
     "react": "19.2.8",

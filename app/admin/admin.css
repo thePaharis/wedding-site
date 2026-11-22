@@ -50,3 +50,4 @@
 .generated-link {border-top:1px solid #cbb9a3;padding-top:16px;margin-top:20px;}
 .generated-link .admin-links {align-items:center;}
 .admin button:disabled {opacity:.65;cursor:wait;}
+.email-preview {display:block;width:100%;min-height:520px;border:1px solid #d6c4ae;background:#f0e9e1;}

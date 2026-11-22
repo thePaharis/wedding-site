@@ -1,3 +1,4 @@
+import { encryptInvitation } from "./email-crypto.mjs";
 import { createHash, randomBytes } from "node:crypto";
 import type { Pool } from "pg";
 
@@ -23,7 +24,7 @@ export async function issueInvitation(pool: Pool, household: string, confirmRepl
     if (!existing.rowCount) throw new InvitationLinkError("Household not found.");
     if (existing.rows[0].invitation_token_hash && !confirmReplacement) throw new InvitationLinkError("Confirm that you want to replace the old invitation link.");
     const token = randomBytes(32).toString("hex");
-    await client.query("UPDATE households SET invitation_token_hash=$1 WHERE id=$2", [tokenHash(token), household]);
+    await client.query("UPDATE households SET invitation_token_hash=$1,invitation_token_encrypted=$3 WHERE id=$2", [tokenHash(token), household, encryptInvitation(token)]);
     await client.query("COMMIT");
     return token;
   } catch (error) { await client.query("ROLLBACK"); throw error; }
